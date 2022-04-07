@@ -1,7 +1,9 @@
-package text;
+package threading;
 
 import output.ResultReporter;
-import text.InputProcessorThread;
+import text.TextTransformer;
+import text.WordCleaner;
+import threading.InputProcessorThread;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -30,15 +32,15 @@ public class TextProcessor {
 
     private void createProcessorThreads() {
         for (int i = 0; i < NUMBER_OF_PROCESSORS; i++) {
-            InputProcessorThread<String> processorThread = new InputProcessorThread<>(textQueue, POISON_PILL, s -> {
-                String[] words = s.split("\\s");
-                for (String word : words) {
-                    count(WordCleaner.clean(word));
-                }
-            });
-
+            InputProcessorThread<String> processorThread = new InputProcessorThread<>(textQueue, POISON_PILL, this::processText);
             processorThreads.add(processorThread);
             processorThread.start();
+        }
+    }
+
+    void processText(String input) {
+        for (String word : TextTransformer.getCleanedWords(input)) {
+            count(word);
         }
     }
 

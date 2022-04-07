@@ -1,4 +1,4 @@
-package text;
+package threading;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Consumer;

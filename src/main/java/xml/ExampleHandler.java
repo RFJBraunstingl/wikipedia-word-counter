@@ -2,7 +2,7 @@ package xml;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
-import text.TextProcessor;
+import threading.TextProcessor;
 
 public class ExampleHandler extends DefaultHandler {
 
