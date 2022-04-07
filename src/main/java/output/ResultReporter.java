@@ -1,5 +1,7 @@
 package output;
 
+import model.WordCountEntry;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -8,28 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ResultReporter {
 
     public static void report(Map<String, AtomicLong> wordCount) {
-        writeResultReport(sortedWordCount(wordCount));
-    }
-
-    private static Collection<WordCountEntry> sortedWordCount(Map<String, AtomicLong> wordCount) {
-
-        System.out.printf("sorting %d entries...%n", wordCount.size());
-
-        SortedSet<WordCountEntry> wordCountEntries = new TreeSet<>(
-                Comparator.<WordCountEntry>comparingLong(entry -> entry.count).reversed()
-        );
-
-        wordCount.entrySet().stream()
-                .map(stringAtomicLongEntry ->
-                        new WordCountEntry(
-                                stringAtomicLongEntry.getKey(),
-                                stringAtomicLongEntry.getValue().get()
-                        )
-                ).forEach(wordCountEntries::add);
-
-        System.out.println("sorting done!");
-
-        return wordCountEntries;
+        writeResultReport(WordCountSorter.sortedWordCount(wordCount));
     }
 
     private static void writeResultReport(Collection<WordCountEntry> entries) {
@@ -51,7 +32,7 @@ public class ResultReporter {
                 }
 
                 writerWordWithCount.write(String.format("%s %d%n", entry.getWord(), entry.getCount()));
-                writerOnlyWords.write(entry.word);
+                writerOnlyWords.write(entry.getWord());
                 writerOnlyWords.write("\n");
             }
 
@@ -67,29 +48,18 @@ public class ResultReporter {
     }
 
     private static boolean shouldBeIgnored(WordCountEntry entry) {
+
+        String word = entry.getWord();
+        long count = entry.getCount();
+        int length = word.length();
+
         // very short words
-        // HTML tags
-        return entry.word.length() < 2 ||
-                entry.word.contains("style") ||
-                entry.word.contains("span");
+        return count < 2 ||
+                /* HTML tags */
+                word.contains("style") ||
+                word.contains("span") ||
+                /* 3 letter words should only be included when they have been used significantly */
+                (length < 4 && count < 20_000);
     }
 
-    private static class WordCountEntry {
-
-        private final String word;
-        private final long count;
-
-        private WordCountEntry(String word, long count) {
-            this.word = word;
-            this.count = count;
-        }
-
-        public String getWord() {
-            return word;
-        }
-
-        public long getCount() {
-            return count;
-        }
-    }
 }
