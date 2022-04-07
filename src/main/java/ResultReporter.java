@@ -39,9 +39,12 @@ public class ResultReporter {
             FileWriter writerWordWithCount = new FileWriter("sorted_words_with_count.txt");
             FileWriter writerOnlyWords = new FileWriter("sorted_words.txt");
 
+            long ignoredCounter = 0;
+
             for (WordCountEntry entry : entries) {
 
                 if (shouldBeIgnored(entry)) {
+                    ignoredCounter++;
                     continue;
                 }
 
@@ -53,6 +56,8 @@ public class ResultReporter {
             writerWordWithCount.close();
             writerOnlyWords.close();
 
+            System.out.printf("%d entries ignored!%n", ignoredCounter);
+
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -60,7 +65,11 @@ public class ResultReporter {
     }
 
     private static boolean shouldBeIgnored(WordCountEntry entry) {
-        return entry.word.length() < 2;
+        // very short words
+        // HTML tags
+        return entry.word.length() < 2 ||
+                entry.word.contains("style") ||
+                entry.word.contains("span");
     }
 
     private static class WordCountEntry {

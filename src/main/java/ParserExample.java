@@ -32,6 +32,6 @@ public class ParserExample {
         long deltaInSec = deltaInMs / 1000;
         long sec = deltaInSec % 60;
         long min = deltaInSec / 60;
-        System.out.printf("it tool %d minutes, %d seconds, and %d milliseconds%n", min, sec, ms);
+        System.out.printf("it took %d minutes, %d seconds, and %d milliseconds%n", min, sec, ms);
     }
 }
