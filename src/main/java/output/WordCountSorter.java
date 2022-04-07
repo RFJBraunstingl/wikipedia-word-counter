@@ -7,6 +7,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class WordCountSorter {
+
+    private static final int STEP_SIZE_FOR_LOGGING = 100_000;
+
     static Collection<WordCountEntry> sortedWordCount(Map<String, AtomicLong> wordCount) {
 
         System.out.printf("sorting %d entries...%n", wordCount.size());
@@ -19,7 +22,14 @@ public class WordCountSorter {
                                 stringAtomicLongEntry.getKey(),
                                 stringAtomicLongEntry.getValue().get()
                         )
-                ).forEach(wordCountEntries::add);
+                ).forEach(e -> {
+                    wordCountEntries.add(e);
+
+                    int numOfSortedEntries = wordCountEntries.size();
+                    if (numOfSortedEntries % STEP_SIZE_FOR_LOGGING == 0) {
+                        System.out.printf("sorted %d entries...%n", numOfSortedEntries);
+                    }
+                });
 
         System.out.println("sorting done!");
 
