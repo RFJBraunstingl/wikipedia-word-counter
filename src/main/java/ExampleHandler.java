@@ -5,10 +5,9 @@ public class ExampleHandler extends DefaultHandler {
 
     private static final int STEP_SIZE_FOR_LOGGING = 1_000;
     private static final String TEXT_TAG = "text";
-    private static final int TAG_COUNT_LIMIT = 100_000;
+    private static final int TAG_COUNT_LIMIT = 10_000_000;
 
-    private final TextProcessor textProcessor = new TextProcessor();
-
+    private TextProcessor textProcessor = new TextProcessor();
     private int textTagCounter = 0;
     private StringBuilder textBuffer;
 
@@ -43,6 +42,14 @@ public class ExampleHandler extends DefaultHandler {
         if (textTagCounter < TAG_COUNT_LIMIT) {
             textProcessor.enqueue(text);
         } else if (textTagCounter == TAG_COUNT_LIMIT) {
+            textProcessor.finish();
+            textProcessor = null;
+        }
+    }
+
+    @Override
+    public void endDocument() {
+        if (textProcessor != null) {
             textProcessor.finish();
         }
     }

@@ -5,6 +5,6 @@ public class WordCleaner {
     public static String clean(String input) {
         return input
                 .toLowerCase(Locale.GERMAN)
-                .replaceAll("[^a-zäöü\\-_]", "");
+                .replaceAll("[^a-zäöü]", "");
     }
 }
