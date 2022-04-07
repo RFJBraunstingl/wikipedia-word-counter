@@ -1,3 +1,5 @@
+package text;
+
 import java.util.Locale;
 
 public class WordCleaner {

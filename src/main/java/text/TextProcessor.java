@@ -1,3 +1,8 @@
+package text;
+
+import output.ResultReporter;
+import text.InputProcessorThread;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TextProcessor {
 
     private static final int NUMBER_OF_PROCESSORS = 12;
-    private static final int QUEUE_CAPACITY = 1_000;
+    private static final int QUEUE_CAPACITY = 10_000;
     private static final String POISON_PILL = String.valueOf(ThreadLocalRandom.current().nextLong());
     private static final Duration PROCESSOR_THREAD_TIMEOUT = Duration.ofMillis(10_000);
 

@@ -1,4 +1,7 @@
+package main;
+
 import org.xml.sax.SAXException;
+import xml.ExampleHandler;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;

@@ -1,5 +1,8 @@
+package xml;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
+import text.TextProcessor;
 
 public class ExampleHandler extends DefaultHandler {
 
