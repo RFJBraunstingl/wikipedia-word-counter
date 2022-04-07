@@ -54,7 +54,9 @@ public class ResultReporter {
         int length = word.length();
 
         // very short words
-        return count < 2 ||
+        return length < 2 ||
+                /* everything with less than 4 occurrences is probably an accident */
+                count < 4 ||
                 /* HTML tags */
                 word.contains("style") ||
                 word.contains("span") ||
