@@ -1,7 +1,7 @@
 package main;
 
 import org.xml.sax.SAXException;
-import xml.ExampleHandler;
+import xml.TextTagHandler;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
@@ -9,7 +9,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 
-public class ParserExample {
+public class WikipediaTextParser {
 
     private static final String WIKIPEDIA_DUMP_PATH = "/Users/rbraunstingl/Downloads/dewiki-20220401.xml";
 
@@ -18,7 +18,7 @@ public class ParserExample {
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false);
         SAXParser saxParser = factory.newSAXParser();
 
-        ExampleHandler handler = new ExampleHandler();
+        TextTagHandler handler = new TextTagHandler();
 
         long beforeTimeInNanos = System.nanoTime();
         saxParser.parse(WIKIPEDIA_DUMP_PATH, handler);
@@ -27,9 +27,9 @@ public class ParserExample {
         System.out.println("done! :)");
 
         long deltaInNanos = afterTimeInNanos - beforeTimeInNanos;
-        long ns = deltaInNanos % 1000;
+        // long ns = deltaInNanos % 1000;
         long deltaInUs = deltaInNanos / 1000;
-        long us = deltaInUs % 1000;
+        // long us = deltaInUs % 1000;
         long deltaInMs = deltaInUs / 1000;
         long ms = deltaInMs % 1000;
         long deltaInSec = deltaInMs / 1000;

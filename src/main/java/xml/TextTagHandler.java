@@ -4,15 +4,24 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 import threading.TextProcessor;
 
-public class ExampleHandler extends DefaultHandler {
+public class TextTagHandler extends DefaultHandler {
 
     private static final int STEP_SIZE_FOR_LOGGING = 1_000;
     private static final String TEXT_TAG = "text";
     private static final int TAG_COUNT_LIMIT = 10_000_000;
 
-    private TextProcessor textProcessor = new TextProcessor();
+    private final TextProcessor textProcessor;
     private int textTagCounter = 0;
     private StringBuilder textBuffer;
+    private boolean isTextProcessorFinished = false;
+
+    public TextTagHandler() {
+        this(new TextProcessor());
+    }
+
+    public TextTagHandler(TextProcessor textProcessor) {
+        this.textProcessor = textProcessor;
+    }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
@@ -46,13 +55,13 @@ public class ExampleHandler extends DefaultHandler {
             textProcessor.enqueue(text);
         } else if (textTagCounter == TAG_COUNT_LIMIT) {
             textProcessor.finish();
-            textProcessor = null;
+            isTextProcessorFinished = true;
         }
     }
 
     @Override
     public void endDocument() {
-        if (textProcessor != null) {
+        if (!isTextProcessorFinished) {
             textProcessor.finish();
         }
     }
