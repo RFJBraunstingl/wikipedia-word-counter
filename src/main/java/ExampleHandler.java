@@ -5,6 +5,7 @@ public class ExampleHandler extends DefaultHandler {
 
     private static final int STEP_SIZE_FOR_LOGGING = 1_000;
     private static final String TEXT_TAG = "text";
+    private static final int TAG_COUNT_LIMIT = 100_000;
 
     private final TextProcessor textProcessor = new TextProcessor();
 
@@ -19,28 +20,30 @@ public class ExampleHandler extends DefaultHandler {
     }
 
     @Override
+    public void characters(char[] ch, int start, int length) {
+        if (textBuffer != null) {
+            textBuffer.append(ch, start, length);
+        }
+    }
+
+    @Override
     public void endElement(String uri, String localName, String qName) {
+        if (!TEXT_TAG.equalsIgnoreCase(qName)) {
+            return;
+        }
+
         String text = textBuffer.toString();
-        textProcessor.enqueue(text);
 
         ++textTagCounter;
         if (textTagCounter % STEP_SIZE_FOR_LOGGING == 0) {
             System.out.printf("text tags found: %d%n", textTagCounter);
             System.out.printf("Queue size is %s%n", textProcessor.getQueueSize());
         }
-    }
 
-    @Override
-    public void characters(char[] ch, int start, int length) {
-        if (textBuffer == null) {
-            textBuffer = new StringBuilder();
-        } else {
-            textBuffer.append(ch, start, length);
+        if (textTagCounter < TAG_COUNT_LIMIT) {
+            textProcessor.enqueue(text);
+        } else if (textTagCounter == TAG_COUNT_LIMIT) {
+            textProcessor.finish();
         }
-    }
-
-    @Override
-    public void endDocument() {
-        textProcessor.shutdown();
     }
 }

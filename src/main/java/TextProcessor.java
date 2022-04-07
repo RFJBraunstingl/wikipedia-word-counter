@@ -1,6 +1,3 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TextProcessor {
 
     private static final int NUMBER_OF_PROCESSORS = 12;
-    private static final int QUEUE_CAPACITY = 100;
+    private static final int QUEUE_CAPACITY = 1_000;
     private static final String POISON_PILL = String.valueOf(ThreadLocalRandom.current().nextLong());
     private static final Duration PROCESSOR_THREAD_TIMEOUT = Duration.ofMillis(10_000);
 
@@ -61,7 +58,7 @@ public class TextProcessor {
         return textQueue.size();
     }
 
-    public void shutdown() {
+    public void finish() {
         try {
             for (int i = 0; i < NUMBER_OF_PROCESSORS; i++) {
                 textQueue.put(POISON_PILL);
@@ -71,27 +68,9 @@ public class TextProcessor {
                 processorThread.join(PROCESSOR_THREAD_TIMEOUT.toMillis());
             }
 
-            dumpResult();
+            ResultReporter.report(wordCount);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void dumpResult() {
-        try {
-
-            FileWriter myWriter = new FileWriter("result.txt");
-
-            for (Map.Entry<String, AtomicLong> entry : wordCount.entrySet()) {
-
-                myWriter.write(String.format("%s %d%n", entry.getKey(), entry.getValue().get()));
-            }
-
-            myWriter.close();
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
     }
 }
